@@ -1,6 +1,9 @@
 import pdfplumber
 import sys
 import os
+import re
+
+watermark_chars = ['广', '东', '省', '教', '育', '考', '试', '院']
 
 def extract_pdf_content(pdf_path):
     """
@@ -25,9 +28,21 @@ def extract_pdf_content(pdf_path):
                 # 提取文本
                 text = page.extract_text()
                 if text:
-                    print(text)
-                    all_text += f"\n=== 第 {page_num} 页 ===\n"
-                    all_text += text + "\n"
+                    lines = ""
+                    for line in text.splitlines():
+                        if line.strip() in watermark_chars:
+                            continue
+
+                        words = ""
+                        for i, word in enumerate(line.split()):
+                            if i < 2:
+                                words += word + " "
+                            else:
+                                if re.sub(r'\D', ' ', word).strip() != "":
+                                    words += re.sub(r'\D', ' ', word).strip() + " "
+                        lines += words[:-1] + "\n"
+                    all_text += lines
+
                 else:
                     print("(此页无可提取的文本)")
                 

@@ -35,8 +35,6 @@ def parse_extracted_content(file_path):
             
             # 清理院校名称，去除可能的特殊字符
             name = name.strip()
-            # 去除院校名称末尾可能的特殊字符（如院、试、考、育、教、省、东、广等）
-            name = re.sub(r'[院试考育教省东广]$', '', name).strip()
             
             if not name:
                 continue
